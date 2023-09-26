@@ -17,6 +17,9 @@ defmodule AnimalPredictionWeb.Endpoint do
   #
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
+    # Configure CORS settings
+  plug CORSPlug
+
   plug Plug.Static,
     at: "/",
     from: :animal_prediction,
@@ -47,5 +50,6 @@ defmodule AnimalPredictionWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+  # plug Plug.Upload
   plug AnimalPredictionWeb.Router
 end

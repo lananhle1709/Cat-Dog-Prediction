@@ -12,6 +12,7 @@ config :animal_prediction,
 
 # Configures the endpoint
 config :animal_prediction, AnimalPredictionWeb.Endpoint,
+  cors: [],
   url: [host: "localhost"],
   render_errors: [
     formats: [html: AnimalPredictionWeb.ErrorHTML, json: AnimalPredictionWeb.ErrorJSON],

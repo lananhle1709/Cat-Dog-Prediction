@@ -20,10 +20,10 @@ defmodule AnimalPredictionWeb.Router do
     get "/", PageController, :home
   end
 
-  scope "/:user_name/", AnimalPredictionWeb do
-    pipe_through :browser
+  scope "/", AnimalPredictionWeb do
+    pipe_through :api
 
-    get "/", PageController, :home
+    post "/upload", PredictionController, :upload
   end
 
   # Other scopes may use custom stacks.
