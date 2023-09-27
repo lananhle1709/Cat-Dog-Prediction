@@ -3,18 +3,18 @@ defmodule AnimalPrediction.ImagesManagement do
   @dir_path "/Users/eq-0613/Documents/Code/animal_prediction_web/animal_prediction_model/predictions/"
 
   def insert(user_name, files, pred_id) do
-    cur_path = @dir_path <> user_name <> "/"
-    pred_path = cur_path <> Integer.to_string(pred_id)
+    cur_path = Path.join(@dir_path, user_name)
+    pred_path = Path.join(cur_path, Integer.to_string(pred_id))
 
-    IO.inspect(cur_path)
+    IO.inspect(pred_path)
 
-    with :ok <- File.mkdir_p(Path.dirname(cur_path)) do
-      File.mkdir_p(Path.dirname(pred_path))
-    end
+    File.mkdir_p!(Path.dirname(pred_path  <> "/"))
 
     Enum.map(files, fn {file_name, file} ->
       temp_path = file.path
-      File.cp(temp_path, Path.join(pred_path, file_name <> ".jpeg"))
+      extension = Path.extname(file.filename)
+      File.exists?(temp_path) |> IO.inspect()
+      File.cp!(temp_path, Path.join(pred_path, file_name <> extension)) |> IO.inspect()
     end)
     pred_path
   end

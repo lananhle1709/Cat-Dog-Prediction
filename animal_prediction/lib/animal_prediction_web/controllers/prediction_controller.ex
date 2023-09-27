@@ -8,10 +8,21 @@ defmodule AnimalPredictionWeb.PredictionController do
     {:ok, prediction} = AnimalPrediction.Repo.insert(prediction)
     pred_path = AnimalPrediction.ImagesManagement.insert(user_name, params, prediction.id)
 
-    {:ok, res} = AnimalPrediction.YoloModel.detect(pred_path, pred_path, "exp")
+    AnimalPrediction.YoloModel.detect(pred_path, pred_path, "exp")
+
+    {:ok, pred_files} = File.ls(Path.join(pred_path, "exp"))
+    pred_files = Enum.filter(pred_files, fn file ->
+      file != "labels"
+    end)
+    IO.inspect(pred_files)
+    images = Enum.map(pred_files, fn file ->
+      file_path = Path.join(pred_path, "exp/#{file}")
+      image_data = File.read!(file_path)
+      %{data: Base.encode64(image_data)}
+    end)
 
     conn
     |> put_status(:ok)
-    |> json(%{message: "Image uploaded successfully"})
+    |> json(%{files: images})
   end
 end

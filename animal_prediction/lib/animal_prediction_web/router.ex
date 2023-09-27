@@ -1,4 +1,5 @@
 defmodule AnimalPredictionWeb.Router do
+  alias AnimalPrediction.Prediction
   use AnimalPredictionWeb, :router
 
   pipeline :browser do
@@ -24,6 +25,12 @@ defmodule AnimalPredictionWeb.Router do
     pipe_through :api
 
     post "/upload", PredictionController, :upload
+  end
+
+  scope "/", AnimalPredictionWeb do
+    pipe_through :api
+
+    get "/history", PredictionController, :upload
   end
 
   # Other scopes may use custom stacks.
