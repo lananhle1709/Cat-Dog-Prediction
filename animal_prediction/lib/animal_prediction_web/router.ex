@@ -30,7 +30,8 @@ defmodule AnimalPredictionWeb.Router do
   scope "/", AnimalPredictionWeb do
     pipe_through :api
 
-    get "/history", PredictionController, :upload
+    get "/history", HistoryController, :get_all
+    get "/history/:id", HistoryController, :get
   end
 
   # Other scopes may use custom stacks.

@@ -18,4 +18,29 @@ defmodule AnimalPrediction.ImagesManagement do
     end)
     pred_path
   end
+
+  def get_pred_path(user_name, id) when is_integer(id) do
+    cur_path = Path.join(@dir_path, user_name)
+    Path.join(cur_path, Integer.to_string(id))
+  end
+
+  def get_pred_path(user_name, id) do
+    cur_path = Path.join(@dir_path, user_name)
+    Path.join(cur_path, id)
+  end
+
+  def get_exp_images(user_name, pred_id) do
+    pred_path = get_pred_path(user_name, pred_id)
+    {:ok, pred_files} = File.ls(Path.join(pred_path, "exp"))
+      pred_files = Enum.filter(pred_files, fn file ->
+      file != "labels"
+    end)
+    IO.inspect(pred_files)
+    images = Enum.map(pred_files, fn file ->
+      file_path = Path.join(pred_path, "exp/#{file}")
+      image_data = File.read!(file_path)
+      %{data: Base.encode64(image_data)}
+    end)
+    images
+  end
 end

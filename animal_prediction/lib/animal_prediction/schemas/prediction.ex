@@ -3,7 +3,7 @@ defmodule AnimalPrediction.Prediction do
 
   schema "predictions" do
     field :date_time, :naive_datetime
-    belongs_to :account, AnimalPrediction.Account
+
     timestamps()
   end
 end

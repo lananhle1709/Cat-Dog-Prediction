@@ -4,25 +4,19 @@ defmodule AnimalPredictionWeb.PredictionController do
   def upload(conn, params) do
     user_name = "anniele"
     date_time = NaiveDateTime.utc_now |> NaiveDateTime.truncate(:second)
-    prediction = %AnimalPrediction.Prediction{date_time: date_time, account: nil}
+    prediction = %AnimalPrediction.Prediction{date_time: date_time}
     {:ok, prediction} = AnimalPrediction.Repo.insert(prediction)
     pred_path = AnimalPrediction.ImagesManagement.insert(user_name, params, prediction.id)
 
     AnimalPrediction.YoloModel.detect(pred_path, pred_path, "exp")
 
-    {:ok, pred_files} = File.ls(Path.join(pred_path, "exp"))
-    pred_files = Enum.filter(pred_files, fn file ->
-      file != "labels"
-    end)
-    IO.inspect(pred_files)
-    images = Enum.map(pred_files, fn file ->
-      file_path = Path.join(pred_path, "exp/#{file}")
-      image_data = File.read!(file_path)
-      %{data: Base.encode64(image_data)}
-    end)
+    images = AnimalPrediction.ImagesManagement.get_exp_images(user_name, prediction.id)
+
+    labels_path = Path.join(pred_path, "exp/labels")
+    data = AnimalPrediction.YoloModel.read_outputs(labels_path)
 
     conn
     |> put_status(:ok)
-    |> json(%{files: images})
+    |> json(%{files: images, data: data})
   end
 end
